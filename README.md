@@ -12,6 +12,17 @@ Convenience tools cover common read/write workflows:
 
 The user's Jira/Confluence permissions still govern every operation. The generic REST tools can perform writes and deletes; use them carefully. This project targets Server/Data Center, not Atlassian Cloud.
 
+## How it works
+
+This MCP server connects to Jira and Confluence through their REST APIs; it does not connect to either product's database. The flow is:
+
+1. An MCP client (for example, an AI assistant) starts this server over the local stdio transport.
+2. The client calls a named tool, such as `jira_search_issues` or `confluence_get_page`.
+3. The server sends the matching REST API request to the configured internal Jira or Confluence URL, authenticating with that user's personal access token.
+4. Jira or Confluence checks the user's permissions, performs the requested read or write, and returns a response through the MCP server to the client.
+
+For write tools, the change is made in Jira or Confluence itself and remains subject to the configured user's permissions. The MCP process must run on a machine that can reach the company's internal hosts, such as a workstation connected to the company network or VPN.
+
 ## Requirements
 
 - Node.js 20 or newer
